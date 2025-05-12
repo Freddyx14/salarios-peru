@@ -2,6 +2,8 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Search } from "lucide-react";
 
 export interface SalaryData {
   id: string;
@@ -24,9 +26,13 @@ const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed 
   
   if (results.length === 0) {
     return (
-      <Card className="w-full mt-4">
-        <CardContent className="pt-6">
-          <p className="text-center text-gray-500">No se encontraron resultados para tu búsqueda.</p>
+      <Card className="w-full mt-4 bg-white border-green-200 overflow-hidden rounded-xl">
+        <CardContent className="p-10 flex flex-col items-center justify-center">
+          <div className="bg-green-100 p-4 rounded-full mb-4">
+            <Search className="h-10 w-10 text-green-600" />
+          </div>
+          <p className="text-center text-green-800 text-lg">No se encontraron resultados para tu búsqueda.</p>
+          <p className="text-center text-green-600 mt-2">Intenta con otros términos o amplía tus criterios de búsqueda.</p>
         </CardContent>
       </Card>
     );
@@ -34,31 +40,42 @@ const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed 
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">{results.length} puesto(s) encontrado(s)</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-green-800 flex items-center">
+          <Badge className="mr-3 bg-green-600 text-white text-sm py-1 px-3 hover:bg-green-700">
+            {results.length}
+          </Badge>
+          {results.length === 1 ? 'Puesto encontrado' : 'Puestos encontrados'}
+        </h2>
       </div>
       
-      <Card className="w-full overflow-hidden">
+      <Card className="w-full overflow-hidden bg-white border-green-200 rounded-xl shadow-lg">
         <div className="overflow-x-auto">
           <Table>
-            <TableCaption>Lista de salarios encontrados según tu búsqueda</TableCaption>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="font-medium">Empresa</TableHead>
-                <TableHead className="font-medium">Puesto</TableHead>
-                <TableHead className="font-medium">Salario mensual</TableHead>
-                <TableHead className="font-medium">Universidad (Bachiller)</TableHead>
-                <TableHead className="font-medium">Universidad (Master)</TableHead>
+            <TableCaption className="text-green-600">
+              Información de salarios actualizada al 2025
+            </TableCaption>
+            <TableHeader className="bg-green-50">
+              <TableRow className="border-b border-green-200">
+                <TableHead className="font-bold text-green-800">Empresa</TableHead>
+                <TableHead className="font-bold text-green-800">Puesto</TableHead>
+                <TableHead className="font-bold text-green-800">Salario mensual</TableHead>
+                <TableHead className="font-bold text-green-800">Universidad (Bachiller)</TableHead>
+                <TableHead className="font-bold text-green-800">Universidad (Master)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {results.map((item) => (
-                <TableRow key={item.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium">{item.company}</TableCell>
-                  <TableCell>{item.position}</TableCell>
-                  <TableCell>{item.salary}</TableCell>
-                  <TableCell>{item.bachelorsUniversity || '-'}</TableCell>
-                  <TableCell>{item.mastersUniversity || '-'}</TableCell>
+                <TableRow key={item.id} className="hover:bg-green-50 border-b border-green-100">
+                  <TableCell className="font-medium text-green-800">{item.company}</TableCell>
+                  <TableCell className="text-green-700">{item.position}</TableCell>
+                  <TableCell>
+                    <Badge className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900">
+                      {item.salary}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-green-700">{item.bachelorsUniversity || '-'}</TableCell>
+                  <TableCell className="text-green-700">{item.mastersUniversity || '-'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
