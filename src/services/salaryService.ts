@@ -73,3 +73,17 @@ export const getSearchHistory = async (userId: string) => {
   
   return data;
 };
+
+export const deleteSearchHistory = async (userId: string) => {
+  const { error } = await supabase
+    .from('search_history')
+    .delete()
+    .eq('user_id', userId);
+    
+  if (error) {
+    console.error("Error al eliminar historial de búsqueda:", error);
+    throw new Error("No se pudo eliminar el historial de búsqueda");
+  }
+  
+  return true;
+};

@@ -3,18 +3,32 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getSearchHistory } from "@/services/salaryService";
+import { getSearchHistory, deleteSearchHistory } from "@/services/salaryService";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, History, Search, Loader2 } from "lucide-react";
+import { ArrowLeft, History, Search, Loader2, Trash2 } from "lucide-react";
 import { SearchHistoryItem } from '@/types/appTypes';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 const SearchHistory = () => {
   const { authState } = useAuth();
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -44,6 +58,32 @@ const SearchHistory = () => {
     }).format(date);
   };
 
+  const handleDeleteHistory = async () => {
+    if (!authState.user) return;
+    
+    setIsDeleting(true);
+    try {
+      await deleteSearchHistory(authState.user.id);
+      setHistory([]);
+      toast({
+        title: "Historial eliminado",
+        description: "Tu historial de búsquedas ha sido eliminado correctamente.",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error al eliminar historial:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el historial de búsquedas. Intenta nuevamente.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-sky-100 py-6 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -53,14 +93,28 @@ const SearchHistory = () => {
             Historial de Búsquedas
           </h1>
           
-          <Button 
-            variant="outline" 
-            className="flex items-center border-blue-300" 
-            onClick={() => navigate('/')}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Búsqueda
-          </Button>
+          <div className="flex gap-3">
+            {history.length > 0 && (
+              <Button 
+                variant="outline" 
+                className="flex items-center border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" 
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={isDeleting || loading}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Borrar Historial
+              </Button>
+            )}
+            
+            <Button 
+              variant="outline" 
+              className="flex items-center border-blue-300" 
+              onClick={() => navigate('/')}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver a Búsqueda
+            </Button>
+          </div>
         </div>
 
         <Card className="bg-white bg-opacity-80 backdrop-blur-sm border-blue-200 shadow-lg">
@@ -119,6 +173,38 @@ const SearchHistory = () => {
             </>
           )}
         </Card>
+
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent className="border-red-100">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-red-600">¿Borrar todo el historial?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción eliminará permanentemente todo tu historial de búsquedas. 
+                Esta acción no se puede deshacer.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction 
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleDeleteHistory}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                    Eliminando...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" /> 
+                    Borrar Historial
+                  </>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
