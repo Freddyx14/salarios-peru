@@ -24,15 +24,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-sky-100 py-6 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-green-800 mb-3 font-serif">Salarios Profesionales en Perú 2025</h1>
-          <div className="w-24 h-1 bg-green-500 mx-auto mb-6 rounded-full"></div>
-          <p className="text-green-700 text-xl max-w-2xl mx-auto">Explora información actualizada sobre salarios según puesto y empresa en el mercado laboral peruano</p>
+        <div className="flex items-center mb-8">
+          <img 
+            src="/lovable-uploads/594e2d90-4bd5-4959-92c8-3bf7651bd3da.png" 
+            alt="Salarios Perú Logo" 
+            className="h-16 md:h-20 mr-4"
+          />
+          <div>
+            <h1 className="text-4xl font-bold text-blue-800 font-serif">Salarios Profesionales en Perú 2025</h1>
+            <p className="text-blue-600 text-lg">Explora información actualizada sobre salarios en el mercado laboral peruano</p>
+          </div>
         </div>
         
-        <SalarySearch onSearch={handleSearch} />
+        <div className="bg-white bg-opacity-80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-200 mb-10">
+          <SalarySearch onSearch={handleSearch} />
+        </div>
         
         <SalaryResults 
           results={filteredResults}
