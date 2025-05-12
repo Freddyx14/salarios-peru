@@ -4,24 +4,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
-
-export interface SalaryData {
-  id: string;
-  company: string;
-  position: string;
-  salary: string;
-  bachelorsUniversity: string;
-  mastersUniversity: string;
-}
+import { SalaryData } from "@/types/appTypes";
 
 interface SalaryResultsProps {
   results: SalaryData[];
   searchPerformed: boolean;
+  isLoading?: boolean;
 }
 
-const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed }) => {
+const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed, isLoading }) => {
   if (!searchPerformed) {
     return null;
+  }
+  
+  if (isLoading) {
+    return (
+      <Card className="w-full mt-4 bg-white border-blue-200 overflow-hidden rounded-xl">
+        <CardContent className="p-10 flex flex-col items-center justify-center">
+          <p className="text-center text-blue-800 text-lg">Cargando resultados...</p>
+        </CardContent>
+      </Card>
+    );
   }
   
   if (results.length === 0) {
@@ -74,8 +77,8 @@ const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed 
                       {item.salary}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-blue-700">{item.bachelorsUniversity || '-'}</TableCell>
-                  <TableCell className="text-blue-700">{item.mastersUniversity || '-'}</TableCell>
+                  <TableCell className="text-blue-700">{item.bachelors_university || '-'}</TableCell>
+                  <TableCell className="text-blue-700">{item.masters_university || '-'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

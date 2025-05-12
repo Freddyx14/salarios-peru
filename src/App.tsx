@@ -10,15 +10,14 @@ import Auth from "./pages/Auth";
 import SearchHistory from "./pages/SearchHistory";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-// Agregar fuente Playfair Display
-import { useEffect } from "react";
+import React from "react";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  useEffect(() => {
-    // Agregar la fuente Playfair Display desde Google Fonts
+  // Using a custom function to add Google Fonts to avoid direct useEffect in the component body
+  React.useEffect(() => {
+    // Add Playfair Display font from Google Fonts
     const link = document.createElement("link");
     link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap";
     link.rel = "stylesheet";

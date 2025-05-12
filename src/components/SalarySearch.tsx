@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowRight } from "lucide-react";
 
-interface SalarySearchProps {
+export interface SalarySearchProps {
   onSearch: (position: string, company: string) => void;
+  isLoading?: boolean;
 }
 
-const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch }) => {
+const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false }) => {
   const [position, setPosition] = useState('');
   const [company, setCompany] = useState('');
 
@@ -62,9 +63,10 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch }) => {
           <Button 
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 h-10"
+            disabled={isLoading}
           >
-            Buscar
-            <ArrowRight className="ml-2 h-5 w-5" />
+            {isLoading ? 'Buscando...' : 'Buscar'}
+            {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
           </Button>
         </div>
       </form>
