@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { SalaryData } from "@/types/appTypes";
 
@@ -24,6 +23,58 @@ export const searchSalaries = async (position: string, company: string): Promise
   }
   
   return data as SalaryData[];
+};
+
+// Nueva función para obtener posiciones disponibles
+export const getAvailablePositions = async (searchTerm: string = ''): Promise<string[]> => {
+  let query = supabase
+    .from('salaries')
+    .select('position')
+    .order('position');
+  
+  // Si hay un término de búsqueda, filtramos por él
+  if (searchTerm) {
+    query = query.ilike('position', `%${searchTerm}%`);
+  }
+  
+  // Limitamos los resultados para evitar demasiadas opciones
+  query = query.limit(20);
+
+  const { data, error } = await query;
+  
+  if (error || !data) {
+    console.error("Error al obtener posiciones disponibles:", error);
+    return [];
+  }
+  
+  // Eliminar duplicados y devolver un array de strings
+  return [...new Set(data.map(item => item.position))];
+};
+
+// Nueva función para obtener empresas disponibles
+export const getAvailableCompanies = async (searchTerm: string = ''): Promise<string[]> => {
+  let query = supabase
+    .from('salaries')
+    .select('company')
+    .order('company');
+  
+  // Si hay un término de búsqueda, filtramos por él
+  if (searchTerm) {
+    query = query.ilike('company', `%${searchTerm}%`);
+  }
+  
+  // Limitamos los resultados para evitar demasiadas opciones
+  query = query.limit(20);
+
+  const { data, error } = await query;
+  
+  if (error || !data) {
+    console.error("Error al obtener empresas disponibles:", error);
+    return [];
+  }
+  
+  // Eliminar duplicados y devolver un array de strings
+  return [...new Set(data.map(item => item.company))];
 };
 
 export const getRandomSalary = async (): Promise<SalaryData | null> => {

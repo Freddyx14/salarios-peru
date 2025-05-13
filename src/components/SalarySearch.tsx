@@ -1,8 +1,23 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, ChevronsUpDown } from "lucide-react";
+import { 
+  Command, 
+  CommandEmpty, 
+  CommandGroup, 
+  CommandInput, 
+  CommandItem, 
+  CommandList 
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { getAvailablePositions, getAvailableCompanies } from '@/services/salaryService';
+import { cn } from '@/lib/utils';
 
 export interface SalarySearchProps {
   onSearch: (position: string, company: string) => void;
@@ -12,6 +27,28 @@ export interface SalarySearchProps {
 const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false }) => {
   const [position, setPosition] = useState('');
   const [company, setCompany] = useState('');
+  const [positionOptions, setPositionOptions] = useState<string[]>([]);
+  const [companyOptions, setCompanyOptions] = useState<string[]>([]);
+  const [openPosition, setOpenPosition] = useState(false);
+  const [openCompany, setOpenCompany] = useState(false);
+
+  // Cargar opciones de posiciones
+  useEffect(() => {
+    const loadPositionOptions = async () => {
+      const options = await getAvailablePositions(position);
+      setPositionOptions(options);
+    };
+    loadPositionOptions();
+  }, [position]);
+
+  // Cargar opciones de empresas
+  useEffect(() => {
+    const loadCompanyOptions = async () => {
+      const options = await getAvailableCompanies(company);
+      setCompanyOptions(options);
+    };
+    loadCompanyOptions();
+  }, [company]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,14 +73,56 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
               Requerido
             </span>
           </label>
-          <Input 
-            id="position" 
-            placeholder="Ej: Gerente, Analista, Desarrollador" 
-            value={position}
-            onChange={(e) => setPosition(e.target.value)}
-            className="border-blue-200 focus-visible:ring-blue-500"
-          />
+          <Popover open={openPosition} onOpenChange={setOpenPosition}>
+            <PopoverTrigger asChild>
+              <div className="flex items-center">
+                <Input 
+                  id="position" 
+                  placeholder="Ej: Gerente, Analista, Desarrollador" 
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                  className="border-blue-200 focus-visible:ring-blue-500 w-full pr-10"
+                />
+                <Button 
+                  type="button"
+                  variant="ghost" 
+                  size="sm" 
+                  className="ml-[-40px] h-9"
+                  onClick={() => setOpenPosition(!openPosition)}
+                >
+                  <ChevronsUpDown className="h-4 w-4 opacity-70" />
+                </Button>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="p-0 w-[300px] h-[300px]">
+              <Command>
+                <CommandInput 
+                  placeholder="Buscar puesto..." 
+                  value={position} 
+                  onValueChange={setPosition}
+                />
+                <CommandList>
+                  <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                  <CommandGroup>
+                    {positionOptions.map((opt) => (
+                      <CommandItem 
+                        key={opt} 
+                        value={opt}
+                        onSelect={(currentValue) => {
+                          setPosition(currentValue);
+                          setOpenPosition(false);
+                        }}
+                      >
+                        {opt}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
+        
         <div className="space-y-2">
           <label htmlFor="company" className="text-blue-800 font-medium flex items-center">
             Empresa
@@ -51,14 +130,56 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
               Opcional
             </span>
           </label>
-          <Input 
-            id="company" 
-            placeholder="Ej: BCP, IBM, Google" 
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            className="border-blue-200 focus-visible:ring-blue-500"
-          />
+          <Popover open={openCompany} onOpenChange={setOpenCompany}>
+            <PopoverTrigger asChild>
+              <div className="flex items-center">
+                <Input 
+                  id="company" 
+                  placeholder="Ej: BCP, IBM, Google" 
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  className="border-blue-200 focus-visible:ring-blue-500 w-full pr-10"
+                />
+                <Button 
+                  type="button"
+                  variant="ghost" 
+                  size="sm" 
+                  className="ml-[-40px] h-9"
+                  onClick={() => setOpenCompany(!openCompany)}
+                >
+                  <ChevronsUpDown className="h-4 w-4 opacity-70" />
+                </Button>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="p-0 w-[300px] h-[300px]">
+              <Command>
+                <CommandInput 
+                  placeholder="Buscar empresa..." 
+                  value={company} 
+                  onValueChange={setCompany}
+                />
+                <CommandList>
+                  <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                  <CommandGroup>
+                    {companyOptions.map((opt) => (
+                      <CommandItem 
+                        key={opt} 
+                        value={opt}
+                        onSelect={(currentValue) => {
+                          setCompany(currentValue);
+                          setOpenCompany(false);
+                        }}
+                      >
+                        {opt}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
+        
         <div className="flex justify-end">
           <Button 
             type="submit"
