@@ -94,7 +94,7 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
                 </Button>
               </div>
             </PopoverTrigger>
-            <PopoverContent align="start" className="p-0 w-[300px] h-[300px]">
+            <PopoverContent align="start" side="bottom" className="p-0 w-[300px] h-[300px]">
               <Command>
                 <CommandInput 
                   placeholder="Buscar puesto..." 
@@ -151,7 +151,7 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
                 </Button>
               </div>
             </PopoverTrigger>
-            <PopoverContent align="start" className="p-0 w-[300px] h-[300px]">
+            <PopoverContent align="start" side="bottom" className="p-0 w-[300px] h-[300px]">
               <Command>
                 <CommandInput 
                   placeholder="Buscar empresa..." 
