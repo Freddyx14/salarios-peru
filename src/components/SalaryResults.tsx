@@ -5,6 +5,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { SalaryData } from "@/types/appTypes";
+import SaveJobButton from './SaveJobButton';
 
 interface SalaryResultsProps {
   results: SalaryData[];
@@ -65,6 +66,7 @@ const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed,
                 <TableHead className="font-bold text-blue-800">Salario mensual</TableHead>
                 <TableHead className="font-bold text-blue-800">Universidad (Bachiller)</TableHead>
                 <TableHead className="font-bold text-blue-800">Universidad (Master)</TableHead>
+                <TableHead className="font-bold text-blue-800 text-center">Acción</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,6 +81,14 @@ const SalaryResults: React.FC<SalaryResultsProps> = ({ results, searchPerformed,
                   </TableCell>
                   <TableCell className="text-blue-700">{item.bachelors_university || '-'}</TableCell>
                   <TableCell className="text-blue-700">{item.masters_university || '-'}</TableCell>
+                  <TableCell className="text-center">
+                    <SaveJobButton 
+                      jobId={item.id} 
+                      company={item.company} 
+                      position={item.position}
+                      showText={false}
+                    />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

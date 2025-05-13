@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import SearchHistory from "./pages/SearchHistory";
+import SavedJobs from "./pages/SavedJobs";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import React from "react";
@@ -41,6 +42,11 @@ const App = () => {
               <Route path="/historial" element={
                 <ProtectedRoute>
                   <SearchHistory />
+                </ProtectedRoute>
+              } />
+              <Route path="/trabajos-guardados" element={
+                <ProtectedRoute>
+                  <SavedJobs />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

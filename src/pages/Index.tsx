@@ -7,7 +7,7 @@ import { searchSalaries, saveSearchHistory } from '@/services/salaryService';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { History, LogOut } from 'lucide-react';
+import { History, LogOut, Bookmark } from 'lucide-react';
 import JobAlert from '@/components/JobAlert';
 import { SalaryData } from '@/types/appTypes';
 
@@ -60,7 +60,16 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              className="flex items-center border-blue-300"
+              onClick={() => navigate('/trabajos-guardados')}
+            >
+              <Bookmark className="mr-2 h-4 w-4" />
+              Trabajos Guardados
+            </Button>
+            
             <Button
               variant="outline"
               className="flex items-center border-blue-300"
@@ -69,6 +78,7 @@ const Index = () => {
               <History className="mr-2 h-4 w-4" />
               Historial
             </Button>
+            
             <Button
               variant="outline"
               className="flex items-center border-blue-300"
