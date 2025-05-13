@@ -70,7 +70,7 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
           <label htmlFor="position" className="text-blue-800 font-medium flex items-center">
             Puesto
             <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded ml-2">
-              Requerido
+              Busca
             </span>
           </label>
           <Popover open={openPosition} onOpenChange={setOpenPosition}>
@@ -127,7 +127,7 @@ const SalarySearch: React.FC<SalarySearchProps> = ({ onSearch, isLoading = false
           <label htmlFor="company" className="text-blue-800 font-medium flex items-center">
             Empresa
             <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded ml-2">
-              Opcional
+              Busca
             </span>
           </label>
           <Popover open={openCompany} onOpenChange={setOpenCompany}>
